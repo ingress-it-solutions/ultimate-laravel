@@ -1,0 +1,49 @@
+{
+    "name": "ultimate-apm/ultimate-laravel",
+    "description": "Monitoring package",
+"keywords": ["monitoring", "php", "ultimate", "laravel"],
+    
+    "type": "library",
+    "authors": [{
+        "name": "Ingress Team",
+        "email": "info@ingressit.com"
+    }],
+    "require": {
+        "php": ">=7.2",
+        "illuminate/console": "^5.5|^6.0|^7.0|^8.0",
+        "illuminate/contracts": "^5.5|^6.0|^7.0|^8.0",
+        "illuminate/support": "^5.5|^6.0|^7.0|^8.0",
+        "ultimate-apm/ultimate-php": "^3.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ultimate\\Laravel\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "config": {
+        "preferred-install": "dist"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require-dev": {
+        "orchestra/testbench": "^5.0"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ultimate\\Laravel\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Ultimate\\Laravel\\UltimateServiceProvider"
+            ],
+            "aliases": {
+                "Ultimate": "Ultimate\\Laravel\\Facades\\Ultimate"
+            }
+        }
+    }}
