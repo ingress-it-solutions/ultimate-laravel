@@ -21,16 +21,16 @@ class UnhandledExceptionServiceProvider extends ServiceProvider
             // starting from L5.4 MessageLogged event class was introduced
             // https://github.com/laravel/framework/commit/57c82d095c356a0fe0f9381536afec768cdcc072
             $this->app['events']->listen(MessageLogged::class, function ($log) {
-                $this->handleExceptionLog($log->message, $log->context);
+                $this->handleExceptionLog($log->level, $log->message, $log->context);
             });
         } else {
             $this->app['events']->listen('illuminate.log', function ($level, $message, $context) {
-                $this->handleExceptionLog($message, $context);
+                $this->handleExceptionLog($level, $message, $context);
             });
         }
     }
 
-    protected function handleExceptionLog($message, $context)
+    protected function handleExceptionLog($level, $message, $context)
     {
         if (
             isset($context['exception']) &&
@@ -43,6 +43,15 @@ class UnhandledExceptionServiceProvider extends ServiceProvider
             $this->reportException($message);
         }
 
+        if ($this->app['ultimate']->isRecording()) {
+            $this->app['ultimate']->currentTransaction()
+                ->addContext('logs', array_merge(
+                    $this->app['ultimate']->currentTransaction()->getContext()['logs']??[],
+                    [
+                        compact('level', 'message')
+                    ]
+                ));
+        }
 
     }
 

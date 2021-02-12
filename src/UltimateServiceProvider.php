@@ -2,8 +2,13 @@
 
 namespace Ultimate\Laravel;
 
+
+use Illuminate\Contracts\View\Engine;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Foundation\Application as LaravelApplication;
+use Illuminate\View\Engines\EngineResolver;
+use Illuminate\View\Factory as ViewFactory;
 use Ultimate\Laravel\Commands\TestCommand;
 use Ultimate\Laravel\Providers\CommandServiceProvider;
 use Ultimate\Laravel\Providers\DatabaseQueryServiceProvider;
@@ -13,6 +18,7 @@ use Ultimate\Laravel\Providers\JobServiceProvider;
 use Ultimate\Laravel\Providers\NotificationServiceProvider;
 use Ultimate\Laravel\Providers\RedisServiceProvider;
 use Ultimate\Laravel\Providers\UnhandledExceptionServiceProvider;
+use Inspector\Laravel\Views\ViewEngineDecorator;
 use Laravel\Lumen\Application as LumenApplication;
 use Ultimate\Configuration;
 
@@ -23,7 +29,7 @@ class UltimateServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    const VERSION = '4.6.0';
+    const VERSION = '21.2.12';
 
     /**
      * Booting of services.
@@ -77,6 +83,44 @@ class UltimateServiceProvider extends ServiceProvider
         });
 
         $this->registerUltimateServiceProviders();
+
+       
+    }
+
+    /**
+     * Decorate View engine to monitor view rendering performance.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    protected function bindViewEngine(): void
+    {
+        $viewEngineResolver = function (EngineResolver $engineResolver): void {
+            foreach (['file', 'php', 'blade'] as $engineName) {
+                $realEngine = $engineResolver->resolve($engineName);
+
+                $engineResolver->register($engineName, function () use ($realEngine) {
+                    return $this->wrapViewEngine($realEngine);
+                });
+            }
+        };
+
+        if ($this->app->resolved('view.engine.resolver')) {
+            $viewEngineResolver($this->app->make('view.engine.resolver'));
+        } else {
+            $this->app->afterResolving('view.engine.resolver', $viewEngineResolver);
+        }
+    }
+
+    private function wrapViewEngine(Engine $realEngine): Engine
+    {
+        /** @var ViewFactory $viewFactory */
+        $viewFactory = $this->app->make('view');
+
+        $viewFactory->composer('*', static function (View $view) use ($viewFactory): void {
+            $viewFactory->share(ViewEngineDecorator::SHARED_KEY, $view->name());
+        });
+
+        return new ViewEngineDecorator($realEngine, $viewFactory);
     }
 
     /**
@@ -112,6 +156,10 @@ class UltimateServiceProvider extends ServiceProvider
 
         if (config('ultimate.notifications')) {
             $this->app->register(NotificationServiceProvider::class);
+        }
+
+        if (config('ultimate.views')) {
+            $this->bindViewEngine();
         }
     }
 }

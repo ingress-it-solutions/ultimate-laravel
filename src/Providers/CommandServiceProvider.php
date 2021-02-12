@@ -21,12 +21,14 @@ class CommandServiceProvider extends ServiceProvider
         }
 
         $this->app['events']->listen(CommandFinished::class, function (CommandFinished $event) {
-            $this->app['ultimate']->currentTransaction()
-                ->addContext('Command', [
-                    'exit_code' => $event->exitCode,
-                    'arguments' => $event->input->getArguments(),
-                    'options' => $event->input->getOptions(),
-                ]);
+            if($this->app['inspector']->isRecording()) {
+                $this->app['ultimate']->currentTransaction()
+                    ->addContext('Command', [
+                        'exit_code' => $event->exitCode,
+                        'arguments' => $event->input->getArguments(),
+                        'options' => $event->input->getOptions(),
+                    ])->setResult($event->exitCode === 0 ? 'success' : 'error');
+            }
         });
     }
 

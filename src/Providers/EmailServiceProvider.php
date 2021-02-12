@@ -29,30 +29,37 @@ class EmailServiceProvider extends ServiceProvider
         $this->app['events']->listen(MessageSending::class, function (MessageSending $event) {
             if (Ultimate::isRecording()) {
                 $this->segments[
-                    $this->generateUniqueKey($event->data)
-                ] = Ultimate::startSegment('email', get_class($event->message))->setContext($event->data);
+                    $this->getSegmentKey($event->message)
+                ] = Ultimate::startSegment('email', get_class($event->message))
+                    // Compatibility with Laravel 5.5
+                    ->addContext('data', property_exists($event, 'data') ? $event->data : null);
             }
         });
 
         $this->app['events']->listen(MessageSent::class, function (MessageSent $event) {
-            $key = $this->generateUniqueKey($event->data);
+            $key = $this->getSegmentKey($event->message);
 
             if (array_key_exists($key, $this->segments)) {
                 $this->segments[$key]->end();
             }
         });
+
+
     }
 
     /**
-     * Generate a unique key to track segment's state.
+     * Generate a unique key for each message.
      *
-     * @param array $data
+     * @param \Swift_Message $message
      * @return string
      */
-    protected function generateUniqueKey($data): string
+    protected function getSegmentKey(\Swift_Message $message)
     {
-        return md5(json_encode($data));
+        return sha1(trim($message->getHeaders()->get('Content-Type')->toString()));
     }
+
+
+    
 
     /**
      * Register the service provider.

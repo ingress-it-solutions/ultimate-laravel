@@ -57,20 +57,29 @@ class GateServiceProvider extends ServiceProvider
      */
     public function afterGateCheck(Authenticatable $user, $ability, $result, $arguments)
     {
-        $key = $this->generateUniqueKey($this->formatArguments($arguments));
+        $arguments = $this->formatArguments($arguments);
+        $key = $this->generateUniqueKey($arguments);
+
 
         if (array_key_exists($key, $this->segments)) {
             $caller = $this->getCallerFromStackTrace();
 
             $this->segments[$key]
-                ->addContext('data', [
+                ->addContext('Check', [
                     'ability' => $ability,
                     'result' => $result ? 'allowed' : 'denied',
-                    'arguments' => $this->formatArguments($arguments),
-                    'file' => $caller['file'],
-                    'line' => $caller['line'],
+                    'arguments' => $arguments,
+                    
                 ])
                 ->end();
+
+                if($caller = $this->getCallerFromStackTrace()) {
+                    $this->segments[$key]
+                    ->addContext('Caller', [
+                        'file' => $caller['file'],
+                        'line' => $caller['line'],
+                    ]);
+                }
         }
 
         return $result;

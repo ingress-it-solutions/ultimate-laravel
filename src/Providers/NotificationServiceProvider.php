@@ -27,14 +27,15 @@ class NotificationServiceProvider extends ServiceProvider
     {
         $this->app['events']->listen(NotificationSending::class, function (NotificationSending $event) {
             if ($this->app['ultimate']->isRecording()) {
-                $segment = $this->app['ultimate']
-                    ->startSegment('notifications', get_class($event->notification))
-                    ->addContext('Data', [
-                        'Channel' => $event->channel,
-                        'Notifiable' => get_class($event->notifiable),
-                    ]);
 
-                $this->segments[$event->notification->id] = $segment;
+                $this->segments[
+                    $event->notification->id
+                ] = Ultimate::startSegment('notifications', get_class($event->notification))
+                        ->addContext('data', [
+                            'Channel' => $event->channel,
+                            'Notifiable' => get_class($event->notifiable),
+                        ]);
+                        
             }
         });
 

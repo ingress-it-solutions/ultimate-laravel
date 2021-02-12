@@ -30,11 +30,11 @@ class JobServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Queue::looping(
-            function () {
-                $this->app['ultimate']->flush();
-            }
-        );
+        // Queue::looping(
+        //     function () {
+        //         $this->app['ultimate']->flush();
+        //     }
+        // );
 
         $this->app['events']->listen(
             JobProcessing::class,
@@ -48,15 +48,9 @@ class JobServiceProvider extends ServiceProvider
                 ) {
                     return;
                 }
+                $this->handleJobStart($event->job);
 
-                if ($this->app['ultimate']->isRecording()) {
-                    // Open a segment if a transaction already exists
-                    $this->initializeSegment($event->job);
-                } else {
-                    // Start a transaction if there's not one
-                    $this->app['ultimate']->startTransaction($event->job->resolveName())
-                        ->addContext('Payload', $event->job->payload());
-                }
+                
             }
         );
 
@@ -80,6 +74,21 @@ class JobServiceProvider extends ServiceProvider
                 $this->handleJobEnd($event->job, true);
             }
         );
+    }
+
+    
+
+    protected function handleJobStart(Job $job)
+    {
+        if ($this->app['ultimate']->isRecording()) {
+            // Open a segment if a transaction already exists
+            $this->initializeSegment($job);
+        } else {
+            // Start a transaction if there's not one
+            $this->app['ultimate']
+                ->startTransaction($job->resolveName())
+                ->addContext('Payload', $job->payload());
+        }
     }
 
     protected function initializeSegment(Job $job)
@@ -115,6 +124,11 @@ class JobServiceProvider extends ServiceProvider
                 ->currentTransaction()
                 ->setResult($failed ? 'error' : 'success');
         }
+        
+        if ($this->app->runningInConsole()) {
+            $this->app['inspector']->flush();
+        }
+
     }
 
     /**

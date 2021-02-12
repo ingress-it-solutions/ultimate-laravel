@@ -85,7 +85,6 @@ class WebRequestMonitoring implements TerminableInterface
                 ->addContext('Response', [
                     'status_code' => $response->getStatusCode(),
                     'version' => $response->getProtocolVersion(),
-                    'content' => is_string($response->getContent()) ? substr($response->getContent(), 0, 250) : $response->getContent(),
                     'charset' => $response->getCharset(),
                     'headers' => $response->headers->all(),
                 ]);
@@ -105,7 +104,8 @@ class WebRequestMonitoring implements TerminableInterface
         if($route instanceof \Illuminate\Routing\Route) {
             $uri = $request->route()->uri();
         } else {
-            $uri = $_SERVER['REQUEST_URI'];
+            $array = explode('?', $_SERVER["REQUEST_URI"]);
+            $uri = array_shift($array);
         }
 
         return $request->method() . ' ' . $this->normalizeUri($uri);
