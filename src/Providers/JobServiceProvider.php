@@ -126,7 +126,7 @@ class JobServiceProvider extends ServiceProvider
         }
         
         if ($this->app->runningInConsole()) {
-            $this->app['inspector']->flush();
+            $this->app['ultimate']->flush();
         }
 
     }

@@ -18,7 +18,7 @@ use Ultimate\Laravel\Providers\JobServiceProvider;
 use Ultimate\Laravel\Providers\NotificationServiceProvider;
 use Ultimate\Laravel\Providers\RedisServiceProvider;
 use Ultimate\Laravel\Providers\UnhandledExceptionServiceProvider;
-use Inspector\Laravel\Views\ViewEngineDecorator;
+use Ultimate\Laravel\Views\ViewEngineDecorator;
 use Laravel\Lumen\Application as LumenApplication;
 use Ultimate\Configuration;
 
