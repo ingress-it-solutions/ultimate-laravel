@@ -24,7 +24,7 @@ return [
     |
     */
 
-    'key' => env('ULTIMATE_API_KEY', env('ULTIMATE_INGESTION_KEY')),
+    'key' => env('ULTIMATE_API_KEY', env('ULTIMATE_BUGTRAP_KEY')),
 
     /*
     |--------------------------------------------------------------------------

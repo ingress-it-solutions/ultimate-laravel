@@ -32,6 +32,11 @@ class TestCommand extends Command
      */
     public function handle(Repository $config)
     {
+        if (!ultimate()->isRecording()) {
+            $this->warn('Ultimate is not enabled');
+            return;
+        }
+
         $this->line("I'm testing your Ultimate integration.");
 
         // Check Ultimate API key
@@ -40,10 +45,10 @@ class TestCommand extends Command
 
             !empty($config->get('ultimate.key'))
                 ? $this->info('✅ Ultimate key installed.')
-                : $this->warn('❌ Ultimate key not specified. Make sure you specify a value in the `key` field of the `ultimate` config file.');
+                : $this->warn('❌ Ultimate key not specified. Make sure you specify the ULTIMATE_BUGTRAP_KEY in your .env file.');
 
-            $segment->addContext('example payload', ['foo' => 'bar']);
-        }, 'test', 'Check API key');
+            $segment->addContext('example payload', ['key' => $config->get('ultimate.key')]);
+        }, 'test', 'Check Bugtrap key');
 
         // Check Ultimate is enabled
         ultimate()->addSegment(function ($segment) use ($config) {
@@ -53,7 +58,7 @@ class TestCommand extends Command
                 ? $this->info('✅ Ultimate is enabled.')
                 : $this->warn('❌ Ultimate is actually disabled, turn to true the `enable` field of the `ultimate` config file.');
 
-            $segment->addContext('another payload', ['foo' => 'bar']);
+            $segment->addContext('another payload', ['enable' => $config->get('ultimate.enable')]);
         }, 'test', 'Check if Ultimate is enabled');
 
         // Check CURL
@@ -69,14 +74,25 @@ class TestCommand extends Command
 
         // Report Exception
         ultimate()->reportException(new \Exception('First Exception detected'));
+        // End the transaction
+        ultimate()->currentTransaction()
+            ->setResult('error')
+            ->end();
 
-        ultimate()->currentTransaction()->setResult('success')->end();
+        // Demo data
+        foreach ([1, 2, 3, 4, 5, 6] as $minutes) {
+            ultimate()->startTransaction("artisan {$this->signature}")
+                ->start(microtime(true) - 1*$minutes)
+                ->setResult('success')
+                ->end(rand(100, 200));
 
-        // A demo transaction
-        ultimate()->startTransaction("artisan {$this->signature}")
-            ->start(microtime(true) - 60*5)
-            ->setResult('success')
-            ->end(200);
+            ultimate()->addSegment(function () {
+                usleep(rand(10, 50) * 10);
+            }, 'segment', 'Task performance');
+
+            // Logs will be reported in the transaction context.
+            \Log::debug("Here you'll find log entries generated during the transaction.");
+        }
 
         $this->line('Done!');
     }
