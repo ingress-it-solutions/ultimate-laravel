@@ -2,8 +2,6 @@
     "name": "ultimate-apm/ultimate-laravel",
     "description": "Monitoring package",
     "keywords": ["monitoring", "php", "ultimate", "laravel", "apm", "bugmanager"],
-
-    "type": "library",
     "license": "MIT",
     "authors": [{
         "name": "Ingress Team",
