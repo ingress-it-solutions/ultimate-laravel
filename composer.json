@@ -1,8 +1,8 @@
 {
     "name": "ultimate-apm/ultimate-laravel",
     "description": "Monitoring package",
-"keywords": ["monitoring", "php", "ultimate", "laravel"],
-    
+    "keywords": ["monitoring", "php", "ultimate", "laravel"],
+
     "type": "library",
     "authors": [{
         "name": "Ingress Team",
@@ -46,4 +46,5 @@
                 "Ultimate": "Ultimate\\Laravel\\Facades\\Ultimate"
             }
         }
-    }}
+    }
+}
