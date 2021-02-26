@@ -10,7 +10,7 @@ use Ultimate\Laravel\Providers\GateServiceProvider;
 use Ultimate\Laravel\Providers\JobServiceProvider;
 use Ultimate\Laravel\Providers\NotificationServiceProvider;
 use Ultimate\Laravel\Providers\RedisServiceProvider;
-use Ultimate\Laravel\Providers\UnhandledExceptionServiceProvider;
+use Ultimate\Laravel\Providers\ExceptionServiceProvider;
 
 class ContainerBindingTest extends BasicTestCase
 {
@@ -25,7 +25,7 @@ class ContainerBindingTest extends BasicTestCase
         $this->assertInstanceOf(EmailServiceProvider::class, $this->app->getProvider(EmailServiceProvider::class));
         $this->assertInstanceOf(JobServiceProvider::class, $this->app->getProvider(JobServiceProvider::class));
         $this->assertInstanceOf(NotificationServiceProvider::class, $this->app->getProvider(NotificationServiceProvider::class));
-        $this->assertInstanceOf(UnhandledExceptionServiceProvider::class, $this->app->getProvider(UnhandledExceptionServiceProvider::class));
+        $this->assertInstanceOf(ExceptionServiceProvider::class, $this->app->getProvider(ExceptionServiceProvider::class));
         $this->assertInstanceOf(DatabaseQueryServiceProvider::class, $this->app->getProvider(DatabaseQueryServiceProvider::class));
     }
 }

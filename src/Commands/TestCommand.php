@@ -39,6 +39,13 @@ class TestCommand extends Command
 
         $this->line("I'm testing your Ultimate integration.");
 
+        
+        try {
+            proc_open("", [], $pipes);
+        } catch (\Throwable $exception) {
+            $this->warn("❌ proc_open function disabled.");
+            return;
+        }
         // Check Ultimate API key
         ultimate()->addSegment(function ($segment) use ($config) {
             usleep(10 * 1000);
@@ -76,7 +83,7 @@ class TestCommand extends Command
         ultimate()->reportException(new \Exception('First Exception detected'));
         // End the transaction
         ultimate()->currentTransaction()
-            ->setResult('error')
+            ->setResult('success')
             ->end();
 
         // Demo data

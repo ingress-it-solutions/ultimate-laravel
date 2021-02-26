@@ -8,7 +8,7 @@ use Illuminate\Log\Events\MessageLogged;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 
-class UnhandledExceptionServiceProvider extends ServiceProvider
+class ExceptionServiceProvider extends ServiceProvider
 {
     /**
      * Booting of services.

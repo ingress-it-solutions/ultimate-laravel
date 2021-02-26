@@ -17,7 +17,7 @@ use Ultimate\Laravel\Providers\GateServiceProvider;
 use Ultimate\Laravel\Providers\JobServiceProvider;
 use Ultimate\Laravel\Providers\NotificationServiceProvider;
 use Ultimate\Laravel\Providers\RedisServiceProvider;
-use Ultimate\Laravel\Providers\UnhandledExceptionServiceProvider;
+use Ultimate\Laravel\Providers\ExceptionServiceProvider;
 use Ultimate\Laravel\Views\ViewEngineDecorator;
 use Laravel\Lumen\Application as LumenApplication;
 use Ultimate\Configuration;
@@ -134,12 +134,13 @@ class UltimateServiceProvider extends ServiceProvider
 
         $this->app->register(GateServiceProvider::class);
 
-        if (config('ultimate.redis') && strpos($this->app->version(), '7') !== false) {
+        // For Laravel >=6
+        if (config('ultimate.redis') && strpos($this->app->version(), '5') === false) {
             $this->app->register(RedisServiceProvider::class);
         }
 
         if (config('ultimate.unhandled_exceptions')) {
-            $this->app->register(UnhandledExceptionServiceProvider::class);
+            $this->app->register(ExceptionServiceProvider::class);
         }
 
         if(config('ultimate.query')){

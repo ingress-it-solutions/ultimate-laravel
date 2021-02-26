@@ -11,7 +11,7 @@ use Ultimate\Models\Segment;
 
 final class ViewEngineDecorator implements Engine
 {
-    public const SHARED_KEY = '__ultimate_tracing_view_name';
+    public const SHARED_KEY = '__ultimate_view_name';
 
     /**
      * @var Engine
