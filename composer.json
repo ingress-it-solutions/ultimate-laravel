@@ -1,9 +1,10 @@
 {
     "name": "ultimate-apm/ultimate-laravel",
     "description": "Monitoring package",
-    "keywords": ["monitoring", "php", "ultimate", "laravel"],
+    "keywords": ["monitoring", "php", "ultimate", "laravel", "apm", "bugmanager"],
 
     "type": "library",
+    "license": "MIT",
     "authors": [{
         "name": "Ingress Team",
         "email": "info@ingressit.com"
@@ -29,7 +30,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require-dev": {
-        "orchestra/testbench": "^5.0"
+        "orchestra/testbench": "^6.3"
     },
     "autoload-dev": {
         "psr-4": {
