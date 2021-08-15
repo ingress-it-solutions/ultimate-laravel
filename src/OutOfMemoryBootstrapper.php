@@ -51,7 +51,7 @@ class OutOfMemoryBootstrapper
                 return;
             }
 
-            // If inspector is recording bump the
+            // If ultimate is recording bump the
             // memory limit so we can report it. The service can be missing when
             // the container isn't complete, e.g. when unit tests are running
             if (ultimate() && ultimate()->isRecording()) {

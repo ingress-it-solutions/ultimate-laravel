@@ -58,7 +58,7 @@ class WebRequestMonitoring implements TerminableInterface
      */
     protected function startTransaction($request)
     {
-        $transaction = Inspector::startTransaction(
+        $transaction = Ultimate::startTransaction(
             $this->buildTransactionName($request)
         );
 
