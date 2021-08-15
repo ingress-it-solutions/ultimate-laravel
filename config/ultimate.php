@@ -95,7 +95,7 @@ return [
     |
     */
 
-    'bindings' => env('ULTIMATE_QUERY_BINDINGS', false),
+    'bindings' => env('ULTIMATE_QUERY_BINDINGS', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -165,6 +165,29 @@ return [
     'unhandled_exceptions' => env('ULTIMATE_UNHANDLED_EXCEPTIONS', true),
 
     /*
+ |--------------------------------------------------------------------------
+ | Http Client monitoring
+ |--------------------------------------------------------------------------
+ |
+ | Enable this if you'd like us to report the http requests done using the Laravel Http Client.
+ |
+ */
+
+    'http_client' => env('ULTIMATE_HTTP_CLIENT', true),
+
+
+    /*
+     |--------------------------------------------------------------------------
+     | With Server Status
+     |--------------------------------------------------------------------------
+     |
+     | Enable this if you'd like us to report server status information (cpu, ram, hdd).
+     |
+     */
+    'server_sampling_ratio' => env('ULTIMATE_SERVER_SAMPLING_RATIO', 0),
+
+
+    /*
     |--------------------------------------------------------------------------
     | Hide sensible data from http requests
     |--------------------------------------------------------------------------
@@ -189,16 +212,22 @@ return [
     */
 
     'ignore_commands' => [
+        'storage:link',
+        'optimize',
+        'optimize:clear',
         'schedule:run',
         'schedule:finish',
-        'package:discover',
         'vendor:publish',
+        'list',
+        'test',
         'package:discover',
+        'migrate',
         'migrate:rollback',
         'migrate:refresh',
         'migrate:fresh',
         'migrate:reset',
         'migrate:install',
+        'cache:clear',
         'config:cache',
         'config:clear',
         'route:cache',
@@ -208,6 +237,7 @@ return [
         'queue:listen',
         'queue:work',
         'queue:restart',
+        'vapor:work',
         'horizon',
         'horizon:work',
         'horizon:supervisor',

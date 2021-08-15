@@ -13,7 +13,7 @@ use Ultimate\Models\Segment;
 class EmailServiceProvider extends ServiceProvider
 {
     /**
-     * Segments to monitor.
+     * Segments collection.
      *
      * @var Segment[]
      */
@@ -27,7 +27,7 @@ class EmailServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->app['events']->listen(MessageSending::class, function (MessageSending $event) {
-            if (Ultimate::isRecording()) {
+            if (Ultimate::canAddSegments()) {
                 $this->segments[
                     $this->getSegmentKey($event->message)
                 ] = Ultimate::startSegment('email', get_class($event->message))

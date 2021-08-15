@@ -7,6 +7,7 @@ namespace Ultimate\Laravel\Providers;
 use Illuminate\Notifications\Events\NotificationSending;
 use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Support\ServiceProvider;
+use Ultimate\Laravel\Facades\Ultimate;
 use Ultimate\Models\Segment;
 
 class NotificationServiceProvider extends ServiceProvider
@@ -26,7 +27,7 @@ class NotificationServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->app['events']->listen(NotificationSending::class, function (NotificationSending $event) {
-            if ($this->app['ultimate']->isRecording()) {
+            if (Ultimate::canAddSegments()) {
 
                 $this->segments[
                     $event->notification->id

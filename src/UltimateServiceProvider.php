@@ -21,6 +21,8 @@ use Ultimate\Laravel\Providers\ExceptionServiceProvider;
 use Ultimate\Laravel\Views\ViewEngineDecorator;
 use Laravel\Lumen\Application as LumenApplication;
 use Ultimate\Configuration;
+use Ultimate\Laravel\Commands\ServerPulse;
+use Ultimate\Laravel\Providers\HttpClientServiceProvider;
 
 class UltimateServiceProvider extends ServiceProvider
 {
@@ -29,7 +31,7 @@ class UltimateServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    const VERSION = '21.2.26';
+    const VERSION = '4.7.13';
 
     /**
      * Booting of services.
@@ -42,7 +44,8 @@ class UltimateServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->commands([
-                TestCommand::class,
+                ServerPulse::class,
+                TestCommand::class
             ]);
         }
     }
@@ -70,15 +73,15 @@ class UltimateServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/ultimate.php', 'ultimate');
 
         // Bind Ultimate service class
-        $this->app->singleton('ultimate', function () {
+        $this->app->singleton('ultimate', function ($app) {
             $configuration = (new Configuration(config('ultimate.key')))
                 ->setEnabled(config('ultimate.enable'))
                 ->setUrl(config('ultimate.url'))
                 ->setVersion(self::VERSION)
                 ->setTransport(config('ultimate.transport'))
                 ->setOptions(config('ultimate.options'))
-                ->setMaxItems(config('ultimate.max_items'));
-
+                ->setMaxItems(config('ultimate.max_items'))
+                ->serverSamplingRatio(config('ultimate.server_sampling_ratio'));
             return new Ultimate($configuration);
         });
 
@@ -128,9 +131,9 @@ class UltimateServiceProvider extends ServiceProvider
      */
     public function registerUltimateServiceProviders()
     {
-        if ($this->app->runningInConsole() && Filters::isApprovedArtisanCommand(config('ultimate.ignore_commands'))) {
-            $this->app->register(CommandServiceProvider::class);
-        }
+
+        $this->app->register(CommandServiceProvider::class);
+
 
         $this->app->register(GateServiceProvider::class);
 
@@ -158,6 +161,16 @@ class UltimateServiceProvider extends ServiceProvider
         if (config('ultimate.notifications')) {
             $this->app->register(NotificationServiceProvider::class);
         }
+
+        // Compatibility with Laravel < 8.4
+        if (
+            config('ultimate.http_client') &&
+            class_exists('\Illuminate\Http\Client\Events\RequestSending') &&
+            class_exists('\Illuminate\Http\Client\Events\ResponseReceived')
+        ) {
+            $this->app->register(HttpClientServiceProvider::class);
+        }
+
 
         if (config('ultimate.views')) {
             $this->bindViewEngine();

@@ -26,6 +26,8 @@ class WebRequestMonitoring implements TerminableInterface
     public function handle($request, Closure $next)
     {
         if (
+            Ultimate::needTransaction()
+            &&
             Filters::isApprovedRequest(config('ultimate.ignore_url'), $request)
             &&
             $this->shouldRecorded($request)
@@ -56,13 +58,13 @@ class WebRequestMonitoring implements TerminableInterface
      */
     protected function startTransaction($request)
     {
-        Ultimate::startTransaction(
+        $transaction = Inspector::startTransaction(
             $this->buildTransactionName($request)
         );
 
         if (Auth::check() && config('ultimate.user')) {
-            Ultimate::currentTransaction()
-                ->withUser(Auth::user()->getAuthIdentifier());
+            $transaction->withUser(
+                Auth::user()->getAuthIdentifier());
         }
     }
 
@@ -74,8 +76,7 @@ class WebRequestMonitoring implements TerminableInterface
      */
     public function terminate(TerminableRequest $request, TerminableResponse $response)
     {
-        if (Ultimate::isRecording()) {
-            Ultimate::currentTransaction()->setResult($response->getStatusCode());
+        if (Ultimate::isRecording() && Ultimate::hasTransaction()) {
 
             Ultimate::currentTransaction()
                 ->addContext('Request Body', Filters::hideParameters(
@@ -87,7 +88,8 @@ class WebRequestMonitoring implements TerminableInterface
                     'version' => $response->getProtocolVersion(),
                     'charset' => $response->getCharset(),
                     'headers' => $response->headers->all(),
-                ]);
+                ])
+                ->setResult($response->getStatusCode());
         }
     }
 

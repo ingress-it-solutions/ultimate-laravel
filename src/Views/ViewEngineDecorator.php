@@ -32,9 +32,9 @@ final class ViewEngineDecorator implements Engine
     /**
      * {@inheritdoc}
      */
-    public function get($path, array $data = []): string
+    public function get($path, array $data = [])
     {
-        if (!Ultimate::isRecording()) {
+        if (!Ultimate::canAddSegments()) {
             return $this->engine->get($path, $data);
         }
 
@@ -45,7 +45,7 @@ final class ViewEngineDecorator implements Engine
                 ->addContext('data', $data);
 
             return $this->engine->get($path, $data);
-        }, 'view.render', $label);
+        }, 'view', $label, true);
     }
 
     public function __call($name, $arguments)

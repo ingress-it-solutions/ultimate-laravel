@@ -6,6 +6,7 @@ namespace Ultimate\Laravel\Providers;
 
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Support\ServiceProvider;
+use Ultimate\Laravel\Facades\Ultimate;
 
 class DatabaseQueryServiceProvider extends ServiceProvider
 {
@@ -17,7 +18,7 @@ class DatabaseQueryServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->app['events']->listen(QueryExecuted::class, function (QueryExecuted $query) {
-            if ($this->app['ultimate']->isRecording()) {
+            if (Ultimate::canAddSegments()) {
                 $this->handleQueryReport($query->sql, $query->bindings, $query->time, $query->connectionName);
             }
         });
@@ -33,7 +34,7 @@ class DatabaseQueryServiceProvider extends ServiceProvider
      */
     protected function handleQueryReport($sql, array $bindings, $time, $connection)
     {
-        $segment = $this->app['ultimate']->startSegment($connection, substr($sql, 0, 50))
+        $segment = Ultimate::startSegment($connection, substr($sql, 0, 50))
             ->start(microtime(true) - $time/1000);
 
         $context = [

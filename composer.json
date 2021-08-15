@@ -12,7 +12,7 @@
         "illuminate/console": "^5.5|^6.0|^7.0|^8.0",
         "illuminate/contracts": "^5.5|^6.0|^7.0|^8.0",
         "illuminate/support": "^5.5|^6.0|^7.0|^8.0",
-        "ultimate-apm/ultimate-php": "dev-main"
+        "ultimate-apm/ultimate-php": "^3.6"
     },
     "autoload": {
         "psr-4": {

@@ -3,7 +3,7 @@
 
 namespace Ultimate\Laravel\Providers;
 
-use Illuminate\Contracts\Auth\Authenticatable;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Gate;
@@ -34,28 +34,29 @@ class GateServiceProvider extends ServiceProvider
     /**
      * Intercepting before gate check.
      *
-     * @param Authenticatable $user
+     * @param \App\Models\User|\Illuminate\Contracts\Auth\Authenticatable $user
      * @param string $ability
+     * @param $arguments
      */
-    public function beforeGateCheck(Authenticatable $user, $ability, $arguments)
+    public function beforeGateCheck($user, $ability, $arguments)
     {
-        if (Ultimate::isRecording()) {
+        if (Ultimate::canAddSegments()) {
             $this->segments[
                 $this->generateUniqueKey($this->formatArguments($arguments))
-            ] = Ultimate::startSegment('gate', 'Authorization:'.$ability);
+            ] = Ultimate::startSegment('gate', 'Gate: '.$ability);
         }
     }
 
     /**
      * Intercepting after gate check.
      *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
+     * @param  \App\Models\User|\Illuminate\Contracts\Auth\Authenticatable  $user
      * @param  string  $ability
      * @param  bool  $result
      * @param  array  $arguments
      * @return bool
      */
-    public function afterGateCheck(Authenticatable $user, $ability, $result, $arguments)
+    public function afterGateCheck($user, $ability, $result, $arguments)
     {
         $arguments = $this->formatArguments($arguments);
         $key = $this->generateUniqueKey($arguments);

@@ -7,6 +7,7 @@ namespace Ultimate\Laravel\Providers;
 use Illuminate\Log\Events\MessageLogged;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
+use Ultimate\Laravel\Facades\Ultimate;
 
 class ExceptionServiceProvider extends ServiceProvider
 {
@@ -43,10 +44,10 @@ class ExceptionServiceProvider extends ServiceProvider
             $this->reportException($message);
         }
 
-        if ($this->app['ultimate']->isRecording()) {
-            $this->app['ultimate']->currentTransaction()
+        if (Ultimate::isRecording() && Ultimate::hasTransaction()) {
+            Ultimate::currentTransaction()
                 ->addContext('logs', array_merge(
-                    $this->app['ultimate']->currentTransaction()->getContext()['logs']??[],
+                    Ultimate::currentTransaction()->getContext()['logs'] ?? [],
                     [
                         compact('level', 'message')
                     ]
@@ -57,8 +58,12 @@ class ExceptionServiceProvider extends ServiceProvider
 
     protected function reportException(\Throwable $exception)
     {
-        if (!$this->app['ultimate']->isRecording()) {
-            $this->app['ultimate']->startTransaction(get_class($exception));
+        if (!Ultimate::isRecording()) {
+            return;
+        }
+
+        if(Ultimate::needTransaction()) {
+            Ultimate::startTransaction(get_class($exception));
         }
 
         $this->app['ultimate']->reportException($exception, false);
