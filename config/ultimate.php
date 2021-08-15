@@ -35,7 +35,7 @@ return [
     |
     */
 
-    'url' => env('ULTIMATE_URL', 'https://ingest.ultimate.dev'),
+    'url' => env('ULTIMATE_URL', 'https://www.palzin.app'),
 
     /*
     |--------------------------------------------------------------------------
