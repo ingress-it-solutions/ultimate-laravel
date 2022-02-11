@@ -35,12 +35,12 @@ class ExceptionServiceProvider extends ServiceProvider
     {
         if (
             isset($context['exception']) &&
-            ($context['exception'] instanceof \Exception || $context['exception'] instanceof \Throwable)
+            ($context['exception'] instanceof \Throwable)
         ) {
             $this->reportException($context['exception']);
         }
 
-        if ($message instanceof \Exception || $message instanceof \Throwable) {
+        if ($message instanceof \Throwable) {
             $this->reportException($message);
         }
 
@@ -60,10 +60,6 @@ class ExceptionServiceProvider extends ServiceProvider
     {
         if (!Ultimate::isRecording()) {
             return;
-        }
-
-        if(Ultimate::needTransaction()) {
-            Ultimate::startTransaction(get_class($exception));
         }
 
         $this->app['ultimate']->reportException($exception, false);
