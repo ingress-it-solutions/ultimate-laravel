@@ -31,8 +31,6 @@ class WebRequestMonitoring implements TerminableInterface
             Filters::isApprovedRequest(config('ultimate.ignore_url'), $request)
             &&
             $this->shouldRecorded($request)
-            &&
-            !Ultimate::isRecording()
         ) {
             $this->startTransaction($request);
         }
