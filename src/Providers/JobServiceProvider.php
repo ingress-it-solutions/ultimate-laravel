@@ -42,7 +42,9 @@ class JobServiceProvider extends ServiceProvider
             JobProcessing::class,
             function (JobProcessing $event) {
 
-                $this->handleJobStart($event->job);
+                if ($this->shouldBeMonitored($event->job->resolveName())) {
+                    $this->handleJobStart($event->job);
+                }
 
                 
             }
@@ -51,33 +53,27 @@ class JobServiceProvider extends ServiceProvider
         $this->app['events']->listen(
             JobProcessed::class,
             function (JobProcessed $event) {
-                $this->handleJobEnd($event->job);
+                if ($this->shouldBeMonitored($event->job->resolveName())) {
+                    $this->handleJobEnd($event->job);
+                }
             }
         );
 
         $this->app['events']->listen(
             JobFailed::class,
             function (JobFailed $event) {
-                $this->handleJobEnd($event->job, true);
+                if ($this->shouldBeMonitored($event->job->resolveName())) {
+                    $this->handleJobEnd($event->job, true);
+                }
             }
         );
 
-        $this->app['events']->listen(
-            JobExceptionOccurred::class,
-            function (JobExceptionOccurred $event) {
-                $this->handleJobEnd($event->job, true);
-            }
-        );
     }
 
     
 
     protected function handleJobStart(Job $job)
     {
-        // Ignore job.
-        if (!$this->shouldBeMonitored($job->resolveName())) {
-            return;
-        }
 
         if (Ultimate::needTransaction()) {
             Ultimate::startTransaction($job->resolveName())
@@ -104,9 +100,6 @@ class JobServiceProvider extends ServiceProvider
      */
     public function handleJobEnd(Job $job, $failed = false)
     {
-        if (!$this->shouldBeMonitored($job->resolveName())) {
-            return;
-        }
 
         $id = $this->getJobId($job);
 
@@ -121,7 +114,7 @@ class JobServiceProvider extends ServiceProvider
 
         // Flush normally happens at shutdown... which only happens in the worker if it is run in a standalone execution.
         // Flush immediately if the job is running in a background worker.
-        if ($this->app->runningInConsole()) {
+        if ($this->app->runningInConsole() && config('queue.default') !== 'sync') {
             Ultimate::flush();
         }
 
