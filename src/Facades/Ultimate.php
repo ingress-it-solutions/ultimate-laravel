@@ -22,6 +22,7 @@ use Ultimate\Models\Transaction;
  * @method mixed addSegment($callback, $type, $label, $throw = false)
  * @method Error reportException(\Throwable $exception, $handled = true)
  * @method static void flush()
+ * @method static void beforeFlush(callable $callback)
  */
 class Ultimate extends Facade
 {
