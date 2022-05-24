@@ -111,18 +111,13 @@ class JobServiceProvider extends ServiceProvider
                 ->setResult($failed ? 'failed' : 'success');
         }
 
-<<<<<<< HEAD
-        // Flush normally happens at shutdown... which only happens in the worker if it is run in a standalone execution.
-        // Flush immediately if the job is running in a background worker.
-=======
+        // Flush immediately if the job is processed in a long-running process.
         /*
-          * We do not have to flush if the application is using the sync driver.
-          * In that case the package consider the job as a segment.
-          * This can cause the "Undefined property: Inspector\Laravel\Inspector::$transaction" error.
-          *
-          * https://github.com/inspector-apm/inspector-laravel/issues/21
-          */
->>>>>>> 3d1ddb4 (Fixed issues rel 22.02.25)
+         * We do not have to flush if the application is using the sync driver.
+         * In that case the package consider the job as a segment.
+         * This can cause the "Undefined property: Ultimate\Laravel\Ultimate::$transaction" error.
+         *
+         */
         if ($this->app->runningInConsole() && config('queue.default') !== 'sync') {
             Ultimate::flush();
         }
