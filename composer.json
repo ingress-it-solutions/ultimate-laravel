@@ -9,10 +9,10 @@
     }],
     "require": {
         "php": ">=7.2|^8.0",
-        "illuminate/console": "^5.5|^6.0|^7.0|^8.0|^9.0",
-        "illuminate/contracts": "^5.5|^6.0|^7.0|^8.0|^9.0",
-        "illuminate/support": "^5.5|^6.0|^7.0|^8.0|^9.0",
-        "ultimate-apm/ultimate-php": "^22.05"
+        "illuminate/console": "^5.5|^6.0|^7.0|^8.0|^9.0|^10.0",
+        "illuminate/contracts": "^5.5|^6.0|^7.0|^8.0|^9.0|^10.0",
+        "illuminate/support": "^5.5|^6.0|^7.0|^8.0|^9.0|^10.0",
+        "ultimate-apm/ultimate-php": "^23.03.08"
     },
     "autoload": {
         "psr-4": {
@@ -28,7 +28,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require-dev": {
-        "orchestra/testbench": "^6.3|^7.0",
+        "orchestra/testbench": "^6.3|^7.0|^8.0",
         "nunomaduro/collision": "^6.1"
     },
     "autoload-dev": {

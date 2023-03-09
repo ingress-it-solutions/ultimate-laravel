@@ -7,7 +7,7 @@ Simple code execution monitoring and bug reporting for Laravel developers.
 
 - [Requirements](#requirements)
 - [Installation](#installation)
-- [Configure the BUGTRAP Key](#key)
+- [Configure the Ingestion Key](#key)
 - [Middleware Setup](#middleware)
 - [Test everything is working](#test)
 
@@ -40,15 +40,15 @@ $app->register(\Ultimate\Laravel\UltimateServiceProvider::class);
 
 <a name="key"></a>
 
-### Configure the BUGTRAP Key
+### Configure the Ingestion Key
 
-First put the BUGTRAP Key in your environment file:
+First put the Ingestion Key in your environment file:
 
 ```
-ULTIMATE_BUGTRAP_KEY=[your bugtrap key]
+ULTIMATE_INGESTION_KEY=[your ingestion key]
 ```
 
-You can obtain an `ULTIMATE_BUGTRAP_KEY` creating a new project in your [Palzin APM](https://www.palzin.app) account.
+You can obtain an `ULTIMATE_INGESTION_KEY` creating a new project in your [Palzin APM](https://www.palzin.app) account.
 
 <a name="middleware"></a>
 

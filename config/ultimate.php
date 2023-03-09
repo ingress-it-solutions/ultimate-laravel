@@ -24,7 +24,7 @@ return [
     |
     */
 
-    'key' => env('ULTIMATE_API_KEY', env('ULTIMATE_BUGTRAP_KEY')),
+    'key' => env('ULTIMATE_API_KEY', env('ULTIMATE_INGESTION_KEY')),
 
     /*
     |--------------------------------------------------------------------------
@@ -172,19 +172,11 @@ return [
  | Enable this if you'd like us to report the http requests done using the Laravel Http Client.
  |
  */
-
     'http_client' => env('ULTIMATE_HTTP_CLIENT', true),
 
+    'http_client_body' => env('ULTIMATE_HTTP_CLIENT_BODY', false),
 
-    /*
-     |--------------------------------------------------------------------------
-     | With Server Status
-     |--------------------------------------------------------------------------
-     |
-     | Enable this if you'd like us to report server status information (cpu, ram, hdd).
-     |
-     */
-    'server_sampling_ratio' => env('ULTIMATE_SERVER_SAMPLING_RATIO', 0),
+
 
 
     /*

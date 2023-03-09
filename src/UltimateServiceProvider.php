@@ -31,7 +31,7 @@ class UltimateServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    const VERSION = '22.01.18';
+    const VERSION = '23.03.08';
 
     /**
      * Booting of services.
@@ -44,7 +44,6 @@ class UltimateServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->commands([
-                ServerPulse::class,
                 TestCommand::class
             ]);
         }
@@ -75,19 +74,19 @@ class UltimateServiceProvider extends ServiceProvider
         // Bind Ultimate service class
         $this->app->singleton('ultimate', function ($app) {
             $configuration = (new Configuration(config('ultimate.key')))
-                ->setEnabled(config('ultimate.enable'))
+                ->setEnabled(config('ultimate.enable', true))
                 ->setUrl(config('ultimate.url'))
                 ->setVersion(self::VERSION)
-                ->setTransport(config('ultimate.transport'))
-                ->setOptions(config('ultimate.options'))
-                ->setMaxItems(config('ultimate.max_items'))
-                ->serverSamplingRatio(config('ultimate.server_sampling_ratio'));
+                ->setTransport(config('ultimate.transport', 'async'))
+                ->setOptions(config('ultimate.options', []))
+                ->setMaxItems(config('ultimate.max_items', 100));
+
             return new Ultimate($configuration);
         });
 
         $this->registerUltimateServiceProviders();
 
-       
+
     }
 
     /**
@@ -138,33 +137,33 @@ class UltimateServiceProvider extends ServiceProvider
         $this->app->register(GateServiceProvider::class);
 
         // For Laravel >=6
-        if (config('ultimate.redis') && strpos($this->app->version(), '5') === false) {
+        if (config('ultimate.redis', true) && substr(app()->version(), 0, 1) > 5) {
             $this->app->register(RedisServiceProvider::class);
         }
 
-        if (config('ultimate.unhandled_exceptions')) {
+        if (config('ultimate.unhandled_exceptions', true)) {
             $this->app->register(ExceptionServiceProvider::class);
         }
 
-        if(config('ultimate.query')){
+        if(config('ultimate.query', true)){
             $this->app->register(DatabaseQueryServiceProvider::class);
         }
 
-        if (config('ultimate.job')) {
+        if (config('ultimate.job', true)) {
             $this->app->register(JobServiceProvider::class);
         }
 
-        if (config('ultimate.email')) {
+        if (config('ultimate.email', true)) {
             $this->app->register(EmailServiceProvider::class);
         }
 
-        if (config('ultimate.notifications')) {
+        if (config('ultimate.notifications', true)) {
             $this->app->register(NotificationServiceProvider::class);
         }
 
         // Compatibility with Laravel < 8.4
         if (
-            config('ultimate.http_client') &&
+            config('ultimate.http_client', true) &&
             class_exists('\Illuminate\Http\Client\Events\RequestSending') &&
             class_exists('\Illuminate\Http\Client\Events\ResponseReceived')
         ) {

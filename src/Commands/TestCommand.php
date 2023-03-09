@@ -5,6 +5,7 @@ namespace Ultimate\Laravel\Commands;
 
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Config\Repository;
 
 class TestCommand extends Command
@@ -39,7 +40,7 @@ class TestCommand extends Command
 
         $this->line("I'm testing your Ultimate integration.");
 
-        
+
         try {
             proc_open("", [], $pipes);
         } catch (\Throwable $exception) {
@@ -52,10 +53,10 @@ class TestCommand extends Command
 
             !empty($config->get('ultimate.key'))
                 ? $this->info('✅ Ultimate key installed.')
-                : $this->warn('❌ Ultimate key not specified. Make sure you specify the ULTIMATE_BUGTRAP_KEY in your .env file.');
+                : $this->warn('❌ Ultimate key not specified. Make sure you specify the ULTIMATE_INGESTION_KEY in your .env file.');
 
             $segment->addContext('example payload', ['key' => $config->get('ultimate.key')]);
-        }, 'test', 'Check Bugtrap key');
+        }, 'test', 'Check Ingestion key');
 
         // Check Ultimate is enabled
         ultimate()->addSegment(function ($segment) use ($config) {
@@ -87,7 +88,7 @@ class TestCommand extends Command
             ->end();
 
         // Demo data
-        \Log::debug("Here you'll find log entries generated during the transaction.");
+        Log::debug("Here you'll find log entries generated during the transaction.");
 
         /*
          * Loading demo data
@@ -103,7 +104,7 @@ class TestCommand extends Command
 
 
             // Logs will be reported in the transaction context.
-            \Log::debug("Here you'll find log entries generated during the transaction.");
+            Log::debug("Here you'll find log entries generated during the transaction.");
         }
 
         $this->line('Done!');
