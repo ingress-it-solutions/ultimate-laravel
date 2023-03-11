@@ -1,6 +1,11 @@
 # Real-Time monitoring package using Palzin Monitor
 
-[![Latest Stable Version](http://poser.pugx.org/ultimate-apm/ultimate-laravel/v)](https://packagist.org/packages/ultimate-apm/ultimate-laravel) [![Total Downloads](http://poser.pugx.org/ultimate-apm/ultimate-laravel/downloads)](https://packagist.org/packages/ultimate-apm/ultimate-laravel) [![License](http://poser.pugx.org/ultimate-apm/ultimate-laravel/license)](https://packagist.org/packages/ultimate-apm/ultimate-laravel)
+![Latest Release](https://img.shields.io/packagist/v/ultimate-apm/ultimate-laravel?style=for-the-badge)
+![Total Downloads (custom server)](https://img.shields.io/packagist/dt/ultimate-apm/ultimate-laravel?style=for-the-badge)
+![Packagist License](https://img.shields.io/packagist/l/ultimate-apm/ultimate-laravel?style=for-the-badge)
+![GitHub last commit](https://img.shields.io/github/last-commit/ultimate-apm/ultimate-laravel?style=for-the-badge)
+![GitHub Release Date](https://img.shields.io/github/release-date/ultimate-apm/ultimate-laravel?style=for-the-badge)
+
 
 Simple code execution monitoring and bug reporting for Laravel developers.
 
