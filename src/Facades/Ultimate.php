@@ -9,7 +9,6 @@ use Ultimate\Models\Segment;
 use Ultimate\Models\Transaction;
 
 /**
- * @method bool isRecording
  * @method Transaction startTransaction($name)
  * @method Transaction currentTransaction()
  * @method static bool needTransaction()

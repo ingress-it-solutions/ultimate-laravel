@@ -1,4 +1,4 @@
-# Real-Time monitoring package using Palzin APM
+# Real-Time monitoring package using Palzin Monitor
 
 [![Latest Stable Version](http://poser.pugx.org/ultimate-apm/ultimate-laravel/v)](https://packagist.org/packages/ultimate-apm/ultimate-laravel) [![Total Downloads](http://poser.pugx.org/ultimate-apm/ultimate-laravel/downloads)](https://packagist.org/packages/ultimate-apm/ultimate-laravel) [![License](http://poser.pugx.org/ultimate-apm/ultimate-laravel/license)](https://packagist.org/packages/ultimate-apm/ultimate-laravel)
 

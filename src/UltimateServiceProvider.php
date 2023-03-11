@@ -9,7 +9,9 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Foundation\Application as LaravelApplication;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Factory as ViewFactory;
+use Ultimate\Laravel\Commands\PublishCommand;
 use Ultimate\Laravel\Commands\TestCommand;
+use Ultimate\Laravel\Commands\UltimatePackageInfoCommand;
 use Ultimate\Laravel\Providers\CommandServiceProvider;
 use Ultimate\Laravel\Providers\DatabaseQueryServiceProvider;
 use Ultimate\Laravel\Providers\EmailServiceProvider;
@@ -21,8 +23,8 @@ use Ultimate\Laravel\Providers\ExceptionServiceProvider;
 use Ultimate\Laravel\Views\ViewEngineDecorator;
 use Laravel\Lumen\Application as LumenApplication;
 use Ultimate\Configuration;
-use Ultimate\Laravel\Commands\ServerPulse;
 use Ultimate\Laravel\Providers\HttpClientServiceProvider;
+use Illuminate\Console\Scheduling\Schedule;
 
 class UltimateServiceProvider extends ServiceProvider
 {
@@ -31,7 +33,7 @@ class UltimateServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    const VERSION = '23.03.08';
+    const VERSION = '23.03.11';
 
     /**
      * Booting of services.
@@ -44,7 +46,9 @@ class UltimateServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->commands([
-                TestCommand::class
+                TestCommand::class,
+                UltimatePackageInfoCommand::class
+
             ]);
         }
     }
@@ -59,6 +63,13 @@ class UltimateServiceProvider extends ServiceProvider
         } elseif ($this->app instanceof LumenApplication) {
             $this->app->configure('ultimate');
         }
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+
+        $this->app->booted(function () {
+            $schedule = $this->app->make(Schedule::class);
+            $schedule->command('ultimate:package-info')->everyThirtyMinutes();
+        });
+
     }
 
     /**

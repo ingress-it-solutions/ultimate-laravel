@@ -12,6 +12,20 @@ return [
 
     'enable' => env('ULTIMATE_ENABLE', true),
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enabling Package Information
+    |--------------------------------------------------------------------------
+    |
+    | Setting "false" the package stop sending data to Palzin Monitor about your composer packages.
+    |
+    */
+
+    'package_enable' => env('ULTIMATE_COMPOSER_ENABLE', true),
+
+
+
     /*
     |--------------------------------------------------------------------------
     | API Key
@@ -23,6 +37,8 @@ return [
     | which should receive your application's events & exceptions.
     |
     */
+
+
 
     'key' => env('ULTIMATE_API_KEY', env('ULTIMATE_INGESTION_KEY')),
 
