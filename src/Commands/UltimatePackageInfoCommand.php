@@ -95,13 +95,28 @@ class UltimatePackageInfoCommand extends Command
         }
     }
 
+    public function getPackageDetail($list)
+    {
+        $data = [];
+
+        foreach($list as $name => $version) {
+            if(\Composer\InstalledVersions::isInstalled($name)) {
+                $data[$name] =  \Composer\InstalledVersions::getPrettyVersion($name);
+
+            } else {
+                $data[$name] = $version;
+            }
+        }
+        return $data;
+    }
+
     public function getComposer()
     {
         $data = $this->readFileContents('composer.json');
 
         return [
-            'require' 	   => ($data['require'] ?? null),
-            'require-dev'  => ($data['require-dev'] ?? null),
+            'require' 	   => ($this->getPackageDetail($data['require']) ?? null),
+            'require-dev'  => ($this->getPackageDetail($data['require-dev']) ?? null),
             'repositories' => ($data['repositories'] ?? null),
         ];
     }

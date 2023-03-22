@@ -33,7 +33,7 @@ class UltimateServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    const VERSION = '23.03.11';
+    const VERSION = '23.03.22';
 
     /**
      * Booting of services.
