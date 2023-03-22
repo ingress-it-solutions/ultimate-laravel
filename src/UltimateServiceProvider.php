@@ -26,6 +26,7 @@ use Ultimate\Configuration;
 use Ultimate\Laravel\Providers\HttpClientServiceProvider;
 use Illuminate\Console\Scheduling\Schedule;
 
+
 class UltimateServiceProvider extends ServiceProvider
 {
     /**
@@ -42,6 +43,7 @@ class UltimateServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
         $this->setupConfigFile();
 
         if ($this->app->runningInConsole()) {
@@ -67,7 +69,7 @@ class UltimateServiceProvider extends ServiceProvider
 
         $this->app->booted(function () {
             $schedule = $this->app->make(Schedule::class);
-            $schedule->command('ultimate:package-info')->everyThirtyMinutes();
+            $schedule->command('ultimate:package-info')->hourly();
         });
 
     }
